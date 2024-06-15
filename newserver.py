@@ -29,10 +29,12 @@ def transfer(client,user_name,file_name,file_size,message):
         user_name=r_user_names[index]
         r_clients.remove(client)
         r_user_names.remove(user_name)
+        return confirm
 
     except Exception as e:
         print(f"error transfer: {e}")
-        transfer(client,message)
+        client.close()
+        break
 
 
 
@@ -46,7 +48,8 @@ def send(client,message):
                 break
     except Exception as e:
         print(f"error send: {e}")
-        send(client,message)
+        client.close()
+        break
 
 
 def recieve(client):
@@ -60,6 +63,8 @@ def recieve(client):
                     return message[:-5]
         except Exception as e:
             print(f"error recieve: {e}")
+            client.close()
+            break
             
 
 def s_handle(client):
@@ -80,7 +85,11 @@ def s_handle(client):
         reciever=r_clients[index]
         index=s_clients.index(client)
         user_name=s_user_names[index]
-        transfer(reciever,user_name,file_name,file_size,data)
+        confirm=transfer(reciever,user_name,file_name,file_size,data)
+        if confirm==b'y':
+            send(client,"sending file...".encode())
+        else:
+            send(client,"failed to send file...".encode())
         s_clients.remove(client)
         s_user_names.remove(user_name)
 

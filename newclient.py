@@ -1,6 +1,7 @@
 import socket
 from Crypto.Cipher import AES
 import os
+import tqdm
 
 key=b"abcdefghijklmnop"
 nonce=b"ponmlkjihgfedcba"
@@ -29,8 +30,8 @@ def read_file(file_name):
     file=open(file_name,"rb")
     return file.read()
 
-def write_file(data):
-    file=open(input("Enter name for recieved file: "),"wb")
+def write_file(file_name,data):
+    file=open(file_name,"wb")
     file.write(decrypt(data))
 
 
@@ -44,6 +45,8 @@ def send(message):
                 break
     except Exception as e:
         print(f"Error send: {e}")
+        client.close()
+        break
 
 
 
@@ -58,16 +61,30 @@ def recieve():
                     return message[:-5]
         except Exception as e:
             print(f"error recieve: {e}")
+            client.close()
+            break
             
 def read():
     username=recieve()
-    choice=input(f"{username} wants to transfer a file,\nEnter 'y' for yes,\nEnter any other value for no: ")
+    choice=input(f"{username.decode()}? Enter 'y' for yes and any other key for no: ")
     if choice=="y":
         send(choice.encode())
         file_size=recieve()
         send(file_size)
-        data=recieve()
-        write_file(data)
+        file_name=input("Enter the name of file to be transferred: ")
+        progress=tqdm.tqdm(unit="B", unit_scale=True, unit_divisor=1000, total=int(file_size.decode()))
+
+        message=b""
+        data=None
+        while True:
+            recv_message=client.recv(1024)
+            if recv_message:
+                message+=recv_message
+                progress.update(1024)
+                if message[-5:]==b"<END>":
+                    data=message[:-5]
+                    break
+        write_file(file_name,data)
 
     else:
         return
@@ -101,6 +118,8 @@ def write():
     file_size=recieve().decode()
     data=encrypt(read_file(file_name))
     send(data)
+    reply=recieve().decode()
+    print(reply)
     
 
 
