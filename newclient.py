@@ -110,7 +110,6 @@ def main():
     while True:
         choice=input("Enter 's' to send a file,\nEnter 'r' to recieve a file,\n Enter anything else to quit: ")
         send(choice.encode())
-        print(choice)
 
         if choice=='s':
             write()            

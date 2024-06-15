@@ -66,10 +66,8 @@ def s_handle(client):
     try:
         while True:
             usernames=' '.join(r_user_names)
-            print(usernames)
             send(client,usernames.encode())
             user_name=recieve(client).decode()
-            print(user_name)
             if user_name!="":
                 break
         send(client,user_name.encode())
@@ -102,12 +100,10 @@ def choose(client,user_name):
     while True:   
         try: 
             choice=recieve(client).decode()
-            print(choice)
 
             if choice=='s':
                 s_user_names.append(user_name)
                 s_clients.append(client)
-                print(s_user_names,s_clients)
                 s_handle(client)
 
             elif choice=='r':
