@@ -34,7 +34,7 @@ def transfer(client,user_name,file_name,file_size,message):
     except Exception as e:
         print(f"error transfer: {e}")
         client.close()
-        break
+
 
 
 
@@ -49,7 +49,6 @@ def send(client,message):
     except Exception as e:
         print(f"error send: {e}")
         client.close()
-        break
 
 
 def recieve(client):

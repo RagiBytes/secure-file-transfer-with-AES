@@ -46,7 +46,6 @@ def send(message):
     except Exception as e:
         print(f"Error send: {e}")
         client.close()
-        break
 
 
 
