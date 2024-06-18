@@ -127,6 +127,7 @@ def choose(client,user_name):
         except Exception as e:
             print(f"{user_name} has left.")
             client.close()
+            break
 
 
 
